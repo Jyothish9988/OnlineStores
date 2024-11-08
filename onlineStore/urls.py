@@ -14,9 +14,19 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+# onlineStore/urls.py
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
+from django.views.generic import RedirectView
+from accounts.views import home
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('accounts/', include('accounts.urls')),
+
+    # The home page
+    path('home/', home, name='home'),
+
+    # Root redirect to home
+    path('', RedirectView.as_view(url='/home/'), name='root_redirect'),
 ]
