@@ -47,7 +47,6 @@ const Login = () => {
               <form onSubmit={handleSubmit}>
                 <div className="mb-3 form-box">
                   <input
-                      type="email"
                       className="form-control"
                       id="email"
                       name="email"
@@ -79,9 +78,7 @@ const Login = () => {
                     <label className="form-check-label" htmlFor="rememberMe">
                       Remember me
                     </label>
-                    <a href="forget-3.html" className="text-decoration-none float-end">
-                      Forget Password
-                    </a>
+
                   </div>
                 </div>
                 <button type="submit" className="btn btn-outline-secondary login-btn w-100 mb-3">

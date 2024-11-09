@@ -37,47 +37,48 @@ const Register = () => {
         <div className="col-lg-6 d-flex align-items-center justify-content-center">
           <div className="form-2-wrapper">
             <div className="logo text-center">
-              <h2>Logo</h2>
+              <h2 >Logo</h2>
             </div>
-            <h2 className="text-center mb-4">Create Your Account</h2>
+            <h2 className="text-center mb-4" >Create Your Account</h2>
+
             <form onSubmit={handleSubmit}>
               {/* Name Input */}
               <div className="mb-3 form-box">
                 <input
-                  type="text"
-                  className="form-control"
-                  id="name"
-                  name="name"
-                  placeholder="Enter Your Name"
-                  value={formData.name}
-                  onChange={handleChange}
-                  required
+                    type="email"
+                    className="form-control"
+                    id="name"
+                    name="name"
+                    placeholder="Enter Your Name"
+                    value={formData.name}
+                    onChange={handleChange}
+                    required
                 />
               </div>
               {/* Email Input */}
               <div className="mb-3 form-box">
                 <input
-                  type="email"
-                  className="form-control"
-                  id="email"
-                  name="email"
-                  placeholder="Enter Your Email"
-                  value={formData.email}
-                  onChange={handleChange}
-                  required
+                    type="email"
+                    className="form-control"
+                    id="email"
+                    name="email"
+                    placeholder="Enter Your Email"
+                    value={formData.email}
+                    onChange={handleChange}
+                    required
                 />
               </div>
               {/* Password Input */}
               <div className="mb-3 form-box">
                 <input
-                  type="password"
-                  className="form-control"
-                  id="password"
-                  name="password"
-                  placeholder="Enter Your Password"
-                  value={formData.password}
-                  onChange={handleChange}
-                  required
+                    type="password"
+                    className="form-control"
+                    id="password"
+                    name="password"
+                    placeholder="Enter Your Password"
+                    value={formData.password}
+                    onChange={handleChange}
+                    required
                 />
               </div>
               {/* Submit Button */}
