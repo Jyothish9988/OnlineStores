@@ -5,9 +5,11 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from django.shortcuts import render
-
-from .models import Profile
-from .serializers import UserRegistrationSerializer, UserLoginSerializer, ProfileSerializer
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.decorators import permission_classes
+from django.contrib.auth.models import AnonymousUser
+from .models import Profile, Product
+from .serializers import UserRegistrationSerializer, UserLoginSerializer, ProfileSerializer, ProductSerializer
 from rest_framework_simplejwt.tokens import RefreshToken
 
 
@@ -42,14 +44,13 @@ class UserLoginView(APIView):
                     'message': 'Login successful'
                 }, status=status.HTTP_200_OK)
 
-            return Response({'error': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
+            return Response({'error': 'Invalid email or password'}, status=status.HTTP_401_UNAUTHORIZED)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.decorators import permission_classes
-from django.contrib.auth.models import AnonymousUser
+
+
 
 
 @api_view(['PUT'])
@@ -71,3 +72,10 @@ def update_profile(request):
 
     except Profile.DoesNotExist:
         return Response({"error": "Profile not found."}, status=status.HTTP_404_NOT_FOUND)
+
+
+class ProductListView(APIView):
+    def get(self, request):
+        products = Product.objects.all()
+        serializer = ProductSerializer(products, many=True)
+        return Response(serializer.data)

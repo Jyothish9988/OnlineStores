@@ -4,7 +4,7 @@ from django.contrib.auth import get_user_model
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from django.contrib.auth.models import User
-from accounts.models import Profile
+from accounts.models import Profile, Product
 
 User = get_user_model()
 
@@ -67,3 +67,9 @@ def update_profile(request):
 
     except Profile.DoesNotExist:
         return Response({"error": "Profile not found."}, status=status.HTTP_404_NOT_FOUND)
+
+
+class ProductSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Product
+        fields = ['id', 'name', 'description', 'price', 'stock', 'image_url']

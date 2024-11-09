@@ -133,7 +133,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # --------------Additionals---------------------
 
 CHOWKIDAR = {
-    'AUTHENTICATION_BACKEND': 'chowkidar.backends.DefaultBackend',
+    'AUTHENTICATION_BACKEND': 'chokidar.backends.DefaultBackend',
 }
 
 
