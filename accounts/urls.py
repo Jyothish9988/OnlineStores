@@ -15,5 +15,6 @@ urlpatterns = [
     path('graphql/', csrf_exempt(GraphQLView.as_view(schema=schema)), name='graphql'),
     path('profile/update/', views.update_profile, name='update_profile'),
     path('products/', ProductListView.as_view(), name='product-list'),
+    path('products/<int:product_id>/', views.product_details, name='product_details'),
 ]
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

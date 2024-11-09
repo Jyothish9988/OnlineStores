@@ -1,5 +1,6 @@
 # accounts/views.py
 from chowkidar.authentication import authenticate
+from django.http import JsonResponse
 from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
@@ -79,3 +80,19 @@ class ProductListView(APIView):
         products = Product.objects.all()
         serializer = ProductSerializer(products, many=True)
         return Response(serializer.data)
+
+
+# In your views.py
+def product_details(request, product_id):
+    try:
+        product = Product.objects.get(id=product_id)
+        data = {
+            "id": product.id,
+            "name": product.name,
+            "description": product.description,
+            "price": product.price,
+            "image_url": product.image_url,  # Correct field name here
+        }
+        return JsonResponse(data)
+    except Product.DoesNotExist:
+        return JsonResponse({"error": "Product not found"}, status=404)

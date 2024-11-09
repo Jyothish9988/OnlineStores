@@ -1,44 +1,47 @@
 import React, { useEffect, useState } from 'react';
-import Link from 'next/link';
+import { useRouter } from 'next/router';  // Import useRouter from next/router
 import Header from './components/header'; // Adjusted path
-import './styles/product_style.css'; // Adjusted path
+import './styles/product_style.css'; // Adjusted path for styling
 
 const Home = () => {
   const [products, setProducts] = useState([]);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const router = useRouter();  // Initialize router
 
   // Fetch the products and login status
   useEffect(() => {
     const fetchProducts = async () => {
-      const response = await fetch('http://localhost:8000/accounts/products/');
-      const data = await response.json();
-      setProducts(data);
+      try {
+        const response = await fetch('http://localhost:8000/accounts/products/');
+        const data = await response.json();
+        setProducts(data); // Store fetched products
+      } catch (error) {
+        console.error('Error fetching products:', error);
+      }
     };
 
     fetchProducts();
 
     const checkLoginStatus = () => {
-      // Check if the token exists in localStorage
       setIsLoggedIn(!!localStorage.getItem('access_token'));  // assuming you store access_token
     };
 
     checkLoginStatus();
 
-    // Listen for storage events (in case of multiple tabs or window updates)
     window.addEventListener('storage', checkLoginStatus);
 
-    // Cleanup the event listener on component unmount
     return () => {
       window.removeEventListener('storage', checkLoginStatus);
     };
   }, []);
 
-  const handleBuyNowClick = (productId) => {
+  // Handle "Product Details" button click
+  const handleProductDetailsClick = (productId) => {
     if (!isLoggedIn) {
       alert('Not logged in. Please log in to continue.');
-      window.location.href = '/login'; // Redirect to login page
+      router.push('/login');  // Use router.push for Next.js navigation to the login page
     } else {
-      window.location.href = `/product/${productId}`;
+      router.push(`/product/${productId}`);  // Use Next.js dynamic routing to navigate to the product details page
     }
   };
 
@@ -49,6 +52,7 @@ const Home = () => {
         <h1>Welcome to the Home Page</h1>
 
         <div className="products-container">
+          {/* If products are available, display them */}
           {products.length > 0 ? (
             products.map((product) => (
               <div key={product.id} className="product-card">
@@ -62,16 +66,16 @@ const Home = () => {
                     <span className="product-card__price">${product.price}</span>
                     <button
                       className="product-card__btn"
-                      onClick={() => handleBuyNowClick(product.id)}
+                      onClick={() => handleProductDetailsClick(product.id)} // Change button action to Product Details
                     >
-                      Buy Now
+                      Product Details
                     </button>
                   </div>
                 </div>
               </div>
             ))
           ) : (
-            <p>Loading products...</p>
+            <p>Loading products...</p> // Show loading text if products are still being fetched
           )}
         </div>
       </div>

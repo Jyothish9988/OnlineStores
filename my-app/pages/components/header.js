@@ -5,17 +5,15 @@ import Link from "next/link";
 const Header = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
-  // Check login status on component mount
   useEffect(() => {
     const checkLoginStatus = () => {
-      const token = localStorage.getItem('access_token'); // Change to access_token
-      console.log("Token found:", token); // Debugging log
+      const token = localStorage.getItem('access_token');
+      console.log("Token found:", token);
       setIsLoggedIn(!!token);
     };
 
     checkLoginStatus();
 
-    // Dynamically add Bootstrap CSS and JS CDN links
     const bootstrapCSS = document.createElement('link');
     bootstrapCSS.rel = 'stylesheet';
     bootstrapCSS.href = 'https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css';
@@ -29,23 +27,21 @@ const Header = () => {
     bootstrapJS.crossOrigin = 'anonymous';
     document.body.appendChild(bootstrapJS);
 
-    // Cleanup function to remove the added CDN links when the component unmounts
     return () => {
       document.head.removeChild(bootstrapCSS);
       document.body.removeChild(bootstrapJS);
     };
-  }, []); // Empty dependency array to run only on mount
+  }, []);
 
-  // Handle logout functionality
   const handleLogout = () => {
-    localStorage.removeItem('access_token'); // Change to access_token
-    localStorage.removeItem('refresh_token'); // Optionally remove refresh_token
+    localStorage.removeItem('access_token');
+    localStorage.removeItem('refresh_token');
     setIsLoggedIn(false);
     window.location.href = '/';
   };
 
   return (
-    <nav className="navbar navbar-expand-lg navbar-light bg-light">
+    <nav className="navbar navbar-expand-lg navbar-light bg-light w-100" style={{ margin: 0, padding: 0 }}>
       <div className="container-fluid">
         <a className="navbar-brand" href="#">MyApp</a>
         <button
