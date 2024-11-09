@@ -18,15 +18,11 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from django.views.generic import RedirectView
-from accounts.views import home
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('accounts/', include('accounts.urls')),
 
-    # The home page
-    path('home/', home, name='home'),
 
-    # Root redirect to home
-    path('', RedirectView.as_view(url='/home/'), name='root_redirect'),
 ]

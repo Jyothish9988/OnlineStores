@@ -1,6 +1,10 @@
-from rest_framework import serializers
-from django.contrib.auth.models import User
+from requests import Response
+from rest_framework import serializers, status
 from django.contrib.auth import get_user_model
+from rest_framework.response import Response
+from rest_framework.decorators import api_view
+from django.contrib.auth.models import User
+from accounts.models import Profile
 
 User = get_user_model()
 
@@ -37,3 +41,29 @@ class UserLoginSerializer(serializers.Serializer):
             return data
 
         raise serializers.ValidationError("Invalid credentials")
+
+
+# Serializer to handle the profile update
+class ProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Profile
+        fields = ['avatar', 'bio']
+
+
+# API View to update profile
+@api_view(['PUT'])
+def update_profile(request):
+    try:
+        user = request.user  # Get the currently authenticated user
+        profile = Profile.objects.get(user=user)
+
+        # Update the profile with new data
+        serializer = ProfileSerializer(profile, data=request.data,
+                                       partial=True)  # partial=True to allow partial updates
+        if serializer.is_valid():
+            serializer.save()  # Save the profile
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    except Profile.DoesNotExist:
+        return Response({"error": "Profile not found."}, status=status.HTTP_404_NOT_FOUND)

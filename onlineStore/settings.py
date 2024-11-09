@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'chowkidar',
     'accounts',
     'rest_framework',
+    'corsheaders',
 ]
 
 MIDDLEWARE = [
@@ -51,6 +52,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
 ]
 
 ROOT_URLCONF = 'onlineStore.urls'
@@ -134,10 +136,23 @@ CHOWKIDAR = {
     'AUTHENTICATION_BACKEND': 'chowkidar.backends.DefaultBackend',
 }
 
+
 AUTH_USER_MODEL = 'accounts.CustomUser'
+
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
 }
+
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
+
+
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000",
+    # Next.js front-end
+]
+CORS_ALLOW_CREDENTIALS = True
