@@ -24,7 +24,7 @@ const Login = () => {
 
       if (response.status === 200) {
         // Use router.push to redirect to the home page
-        router.push('/home');  // This will trigger a full page load and resolve style issues
+        router.push('/home');  // Thisxcscsa will trigger a full page load and resolve style issues
       }
     } catch (err) {
       setError(err.response?.data?.detail || 'Login failed. Please try again.');
