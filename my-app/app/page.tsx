@@ -4,7 +4,10 @@ import Header from "@/pages/components/header";
 
 const Home = () => {
   return (
-    <div>
+    <div style={{
+      background: 'linear-gradient(90deg, #e2e2e2, #c9d6ff)',
+      minHeight: '100vh', // Ensures the gradient covers the whole screen
+    }}>
       <Header />
       <div style={{ textAlign: 'center', marginTop: '50px' }}>
         <h1>Welcome to the Home Page</h1>
