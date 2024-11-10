@@ -4,7 +4,7 @@ from django.contrib.auth import get_user_model
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from django.contrib.auth.models import User
-from accounts.models import Profile, Product
+from accounts.models import Profile, Product, Cart
 
 User = get_user_model()
 
@@ -50,18 +50,16 @@ class ProfileSerializer(serializers.ModelSerializer):
         fields = ['avatar', 'bio']
 
 
-# API View to update profile
 @api_view(['PUT'])
 def update_profile(request):
     try:
-        user = request.user  # Get the currently authenticated user
+        user = request.user
         profile = Profile.objects.get(user=user)
 
-        # Update the profile with new data
         serializer = ProfileSerializer(profile, data=request.data,
-                                       partial=True)  # partial=True to allow partial updates
+                                       partial=True)
         if serializer.is_valid():
-            serializer.save()  # Save the profile
+            serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -69,7 +67,16 @@ def update_profile(request):
         return Response({"error": "Profile not found."}, status=status.HTTP_404_NOT_FOUND)
 
 
+
 class ProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
-        fields = ['id', 'name', 'description', 'price', 'stock', 'image_url']
+        fields = ['id', 'name', 'description', 'price', 'stock', 'image_url']  # Include relevant fields
+
+class CartSerializer(serializers.ModelSerializer):
+    product = ProductSerializer()  # Nested serializer for product details
+
+    class Meta:
+        model = Cart
+        fields = ['user', 'product', 'quantity', 'added_at']  # Now includes full product details
+

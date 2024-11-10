@@ -37,11 +37,14 @@ const Login = () => {
       }
 
       const data = await response.json();
+      console.log(data);  // Check the response structure
 
       if (response.status === 200) {
+        // Ensure 'username' is present in the response
         localStorage.setItem('access_token', data.access_token);
         localStorage.setItem('refresh_token', data.refresh_token);
-        router.push('/');
+        localStorage.setItem('username', data.username);  // Store username here
+        router.push('/');  // Redirect after login
       }
     } catch (err) {
       setError(err.message);
@@ -61,30 +64,30 @@ const Login = () => {
             <form onSubmit={handleSubmit}>
               <div className="mb-3 form-box">
                 <input
-                    className="form-control"
-                    id="email"
-                    name="email"
-                    placeholder="Enter Your Email"
-                    value={formData.email}
-                    onChange={handleChange}
-                    required
+                  className="form-control"
+                  id="email"
+                  name="email"
+                  placeholder="Enter Your Email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  required
                 />
               </div>
               <div className="mb-3">
                 <input
-                    type="password"
-                    className="form-control"
-                    id="password"
-                    name="password"
-                    placeholder="Enter Your Password"
-                    value={formData.password}
-                    onChange={handleChange}
-                    required
+                  type="password"
+                  className="form-control"
+                  id="password"
+                  name="password"
+                  placeholder="Enter Your Password"
+                  value={formData.password}
+                  onChange={handleChange}
+                  required
                 />
               </div>
               <div className="mb-3">
                 <div className="form-check">
-                  <input type="checkbox" className="form-check-input" id="rememberMe"/>
+                  <input type="checkbox" className="form-check-input" id="rememberMe" />
                   <label className="form-check-label" htmlFor="rememberMe">Remember me</label>
                 </div>
               </div>

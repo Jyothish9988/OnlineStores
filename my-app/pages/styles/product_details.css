@@ -209,3 +209,21 @@ header {
 .buy-now-btn {
     margin-right: 5px; /* Added some margin between the buttons */
 }
+
+.quantity-container {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin: 10px 0;
+}
+
+.quantity-container input {
+  width: 50px;
+  text-align: center;
+}
+
+.quantity-container button {
+  padding: 5px 10px;
+  font-size: 16px;
+  cursor: pointer;
+}

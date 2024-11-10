@@ -1,0 +1,152 @@
+/* General Styles */
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #f8f8f8;
+}
+
+h1 {
+  font-size: 32px;
+  color: #333;
+  text-align: center;
+  margin-top: 50px;
+}
+
+/* Cart Page */
+.shopping-cart {
+  width: 80%;
+  max-width: 1200px;
+  margin: 0 auto;
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  margin-top: 30px;
+}
+
+/* Column Labels */
+.column-labels {
+  display: grid;
+  grid-template-columns: 1fr 3fr 1fr 1fr 1fr 1fr;
+  font-weight: bold;
+  text-align: left;
+  border-bottom: 2px solid #eee;
+  padding-bottom: 10px;
+  margin-bottom: 20px;
+}
+
+.column-labels label {
+  text-transform: uppercase;
+  font-size: 14px;
+  color: #666;
+}
+
+/* Product Styles */
+.product {
+  display: grid;
+  grid-template-columns: 1fr 3fr 1fr 1fr 1fr 1fr;
+  align-items: center;
+  border-bottom: 1px solid #eee;
+  padding: 20px 0;
+}
+
+.product-image img {
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+.product-details {
+  padding-left: 10px;
+}
+
+.product-title {
+  font-size: 18px;
+  font-weight: bold;
+  color: #333;
+}
+
+.product-description {
+  font-size: 14px;
+  color: #777;
+  margin-top: 5px;
+}
+
+.product-price,
+.product-line-price {
+  font-size: 16px;
+  color: #333;
+}
+
+.product-quantity input {
+  width: 50px;
+  padding: 5px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.product-removal button {
+  padding: 10px;
+  background-color: #f44336;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.product-removal button:hover {
+  background-color: #d32f2f;
+}
+
+/* Totals Section */
+.totals {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-gap: 20px;
+  margin-top: 40px;
+}
+
+.totals-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 0;
+}
+
+.totals-item label {
+  font-size: 16px;
+  font-weight: bold;
+  color: #333;
+}
+
+.totals-value {
+  font-size: 16px;
+  color: #333;
+}
+
+.totals-item-total .totals-value {
+  font-size: 18px;
+  font-weight: bold;
+  color: #333;
+}
+
+/* Checkout Button */
+.checkout {
+  background-color: #4caf50;
+  color: white;
+  font-size: 16px;
+  padding: 15px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  width: 100%;
+  margin-top: 30px;
+  transition: background-color 0.3s;
+}
+
+.checkout:hover {
+  background-color: #388e3c;
+}
+

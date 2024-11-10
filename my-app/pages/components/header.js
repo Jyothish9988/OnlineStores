@@ -1,6 +1,6 @@
 'use client';
 import React, { useEffect, useState } from 'react';
-import Link from "next/link";
+import Link from 'next/link';
 
 const Header = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -41,41 +41,48 @@ const Header = () => {
   };
 
   return (
-    <nav className="navbar navbar-expand-lg navbar-light bg-light w-100" style={{ margin: 0, padding: 0 }}>
+    <nav className="navbar navbar-expand-lg navbar-light bg-light w-100">
       <div className="container-fluid">
         <a className="navbar-brand" href="#">MyApp</a>
         <button
           className="navbar-toggler"
           type="button"
           data-bs-toggle="collapse"
-          data-bs-target="#navbarSupportedContent"
-          aria-controls="navbarSupportedContent"
+          data-bs-target="#navbarNav"
+          aria-controls="navbarNav"
           aria-expanded="false"
           aria-label="Toggle navigation"
         >
           <span className="navbar-toggler-icon"></span>
         </button>
 
-        <div className="collapse navbar-collapse" id="navbarSupportedContent">
+        <div className="collapse navbar-collapse" id="navbarNav">
           <ul className="navbar-nav me-auto mb-2 mb-lg-0">
+            {/* Navigation links for logged-in and non-logged-in users */}
             {!isLoggedIn ? (
               <>
                 <li className="nav-item">
-                  <Link className="nav-link" href="/login">Go to Login</Link>
+                  <Link className="nav-link" href="/login">Login</Link>
                 </li>
                 <li className="nav-item">
-                  <Link className="nav-link" href="/register">Go to Register</Link>
+                  <Link className="nav-link" href="/register">Register</Link>
                 </li>
               </>
             ) : (
-              <li className="nav-item">
-                <button className="nav-link btn btn-link" onClick={handleLogout}>Logout</button>
-              </li>
+              <>
+                <li className="nav-item">
+                  <Link className="nav-link" href="/cart">Cart</Link>
+                </li>
+                <li className="nav-item">
+                  <button className="nav-link btn btn-link" onClick={handleLogout}>Logout</button>
+                </li>
+              </>
             )}
           </ul>
 
+          {/* Search form */}
           <form className="d-flex">
-            <input className="form-control me-2" type="search" placeholder="Search" aria-label="Search"/>
+            <input className="form-control me-2" type="search" placeholder="Search" aria-label="Search" />
             <button className="btn btn-outline-success" type="submit">Search</button>
           </form>
         </div>

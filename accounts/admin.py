@@ -1,6 +1,7 @@
 from django.contrib import admin
 from django.utils.html import format_html
-from .models import CustomUser, Product
+from .models import CustomUser, Product, Cart
+
 
 @admin.register(CustomUser)
 class CustomUserAdmin(admin.ModelAdmin):
@@ -28,3 +29,24 @@ class ProductAdmin(admin.ModelAdmin):
         urls = super().get_urls()
         custom_urls = []
         return custom_urls + urls
+
+
+@admin.register(Cart)
+class CartAdmin(admin.ModelAdmin):
+    list_display = ['user', 'product', 'quantity', 'added_at']
+    search_fields = ['user__username', 'product__name']
+    list_filter = ['user', 'product']
+    ordering = ['-added_at']
+    readonly_fields = ['added_at']  # Make the added_at field readonly
+
+    # Optional: Admin actions to update the cart (e.g., clearing cart)
+    actions = ['clear_cart']
+
+    def clear_cart(self, request, queryset):
+        if queryset.exists():
+            queryset.delete()
+            self.message_user(request, "Selected cart items have been cleared.", messages.SUCCESS)
+        else:
+            self.message_user(request, "No items selected to clear.", messages.WARNING)
+
+    clear_cart.short_description = 'Clear selected cart items'
