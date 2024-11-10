@@ -46,10 +46,10 @@ const Home = () => {
   };
 
   return (
-    <div style={{ minHeight: '100vh' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
       <Header />
-      <div style={{ textAlign: 'center', marginTop: '50px' }}>
-        <h1>Welcome to the Home Page</h1>
+      <div style={{ flexGrow: 1, textAlign: 'center', marginTop: '50px' }}>
+        <h1>Products</h1>
 
         <div className="products-container">
           {/* If products are available, display them */}

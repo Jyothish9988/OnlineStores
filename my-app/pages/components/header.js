@@ -1,6 +1,7 @@
 'use client';
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 const Header = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -62,27 +63,30 @@ const Header = () => {
             {!isLoggedIn ? (
               <>
                 <li className="nav-item">
-                  <Link className="nav-link" href="/login">Login</Link>
+                  <Link className="nav-link" href="/login" style={{color: 'black'}}>Login</Link>
                 </li>
                 <li className="nav-item">
-                  <Link className="nav-link" href="/register">Register</Link>
+                  <Link className="nav-link" href="/register" style={{color: 'black'}}>Register</Link>
                 </li>
               </>
             ) : (
-              <>
-                <li className="nav-item">
-                  <Link className="nav-link" href="/cart">Cart</Link>
-                </li>
-                <li className="nav-item">
-                  <button className="nav-link btn btn-link" onClick={handleLogout}>Logout</button>
-                </li>
-              </>
+                <>
+                  <li className="nav-item">
+                    <Link className="nav-link" href="/cart" style={{color: 'black'}}>Cart</Link>
+                  </li>
+                  <li className="nav-item">
+                    <button className="nav-link btn btn-link" onClick={handleLogout} style={{color: 'black'}}>Logout
+                    </button>
+                  </li>
+
+
+                </>
             )}
           </ul>
 
           {/* Search form */}
           <form className="d-flex">
-            <input className="form-control me-2" type="search" placeholder="Search" aria-label="Search" />
+            <input className="form-control me-2" type="search" placeholder="Search" aria-label="Search"/>
             <button className="btn btn-outline-success" type="submit">Search</button>
           </form>
         </div>

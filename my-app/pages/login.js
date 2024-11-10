@@ -53,8 +53,9 @@ const Login = () => {
 
   return (
     <div className={styles.container}>
+
       <div className="row">
-        <div className="col-lg-6"></div>
+        <div className="col-lg-6"><img src="https://colorlib.com/wp/wp-content/uploads/sites/2/free-bootstrap-ecommerce-templates.png" alt="Girl in a jacket" width="495" height="100%"/></div>
         <div className="col-lg-6 d-flex align-items-center justify-content-center">
           <div className="form-2-wrapper">
             <div className="logo text-center">

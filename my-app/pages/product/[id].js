@@ -143,11 +143,13 @@ const ProductDetails = () => {
 
             <div className="item-info-parent">
               <div className="main-info">
-                <h4>{product.name}</h4>
+                <h3>{product.name}</h3>
                 <div className="star-rating">
                   <span>★★★★</span>★
                 </div>
                 <p>Price: <span id="price">₹ {product.price}</span></p>
+                <h5>Description</h5>
+                <p>{product.description}</p>
               </div>
 
               <div className="select-items">

@@ -1,0 +1,6 @@
+/* In your CSS file for header, e.g., header.css */
+.header-container {
+  width: 100%;
+  height: auto; /* or adjust as necessary */
+  padding: 20px;
+}

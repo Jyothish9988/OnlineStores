@@ -31,15 +31,17 @@ const Register = () => {
     <div className={styles.container}>
       <div className="row">
         {/* Left Blank Side */}
-        <div className="col-lg-6"></div>
+        <div className="col-lg-6"><img
+            src="https://colorlib.com/wp/wp-content/uploads/sites/2/free-bootstrap-ecommerce-templates.png"
+            alt="Girl in a jacket" width="465" height="100%"/></div>
 
         {/* Right Side Form */}
         <div className="col-lg-6 d-flex align-items-center justify-content-center">
           <div className="form-2-wrapper">
             <div className="logo text-center">
-              <h2 >Logo</h2>
+              <h2>Logo</h2>
             </div>
-            <h2 className="text-center mb-4" >Create Your Account</h2>
+            <h2 className="text-center mb-4">Create Your Account</h2>
 
             <form onSubmit={handleSubmit}>
               {/* Name Input */}

@@ -1,14 +1,37 @@
 /* styles/global.css */
+
+/* Reset default margins and padding */
+html,
 body {
   margin: 0;
   padding: 0;
+  width: 100vw;
+  overflow-x: hidden;
+  height: 100%;
+}
+
+/* Body styles */
+body {
   font-family: 'Roboto', sans-serif;
-  display: flex;
-  align-items: center;
-  justify-content: center;
   background: linear-gradient(90deg, #e2e2e2, #c9d6ff);
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
-  height: 100vh;
+  min-height: 100vh;
+}
+
+/* Ensure navbar spans full width */
+nav {
+  width: 100vw;
+  max-width: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+/* Center content inside the main area only, not affecting the navbar */
+.main-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: calc(100vh - 56px); /* Adjust height to account for navbar */
 }
