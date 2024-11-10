@@ -82,13 +82,12 @@ class CartSerializer(serializers.ModelSerializer):
 
 
 class OrderSerializer(serializers.ModelSerializer):
-    user = serializers.StringRelatedField()
     product = serializers.StringRelatedField()  #
 
     class Meta:
         model = Order
-        fields = ['id', 'user', 'product', 'quantity', 'added_at', 'status']
-        read_only_fields = ['id', 'added_at']
+        fields = ['orderid', 'user', 'product', 'quantity', 'added_at', 'status']
+
 
 
 class AddressSerializer(serializers.ModelSerializer):

@@ -53,6 +53,7 @@ class Cart(models.Model):
 
 
 class Order(models.Model):
+    orderid = models.AutoField(primary_key=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     quantity = models.PositiveIntegerField(default=1)

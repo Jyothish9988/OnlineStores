@@ -1,22 +1,17 @@
 # accounts/views.py
 from chowkidar.authentication import authenticate
-from chowkidar.decorators import login_required
 from django.http import JsonResponse
-from django.views.decorators.csrf import csrf_exempt
 from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from django.shortcuts import render, get_object_or_404
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import permission_classes
-from django.contrib.auth.models import AnonymousUser
-from .models import Profile, Product, Cart, Address
-from .serializers import UserRegistrationSerializer, UserLoginSerializer, ProfileSerializer, ProductSerializer, \
-    CartSerializer, AddressSerializer
+from .models import Profile, Product, Cart, Address, Order
+from .serializers import UserRegistrationSerializer, UserLoginSerializer, ProfileSerializer, ProductSerializer,CartSerializer, AddressSerializer
 from rest_framework_simplejwt.tokens import RefreshToken
-import logging
-from rest_framework_simplejwt.tokens import RefreshToken
+from django.core.mail import send_mail
+from django.conf import settings
 
 # Create your views here.
 
@@ -27,9 +22,6 @@ class UserRegistrationView(APIView):
             serializer.save()
             return Response({'message': 'User registered successfully'}, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
-
 
 
 class UserLoginView(APIView):
@@ -211,5 +203,35 @@ def update_address(request, address_id):
     return Response({"error": "Invalid data", "details": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
 
 
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def order_now(request):
+    user = request.user
+    product_id = request.data.get("product_id")
+    quantity = request.data.get("quantity", 1)
+
+    if not product_id:
+        return Response({"error": "Product ID is required"}, status=status.HTTP_400_BAD_REQUEST)
+
+    try:
+        product = Product.objects.get(id=product_id)
+    except Product.DoesNotExist:
+        return Response({"error": "Product not found"}, status=status.HTTP_404_NOT_FOUND)
+
+    order_item, created = Order.objects.get_or_create(user=user, product=product)
+    order_item.quantity += quantity
+    order_item.save()
+
+    # Sending email after successful order
+    subject = "Order Confirmation"
+    message = f"Hello {user.username},\n\nYour order for {product.name} (Quantity: {quantity}) has been successfully placed.\n\nThank you for shopping with us!"
+    recipient_list = [user.email]
+
+    try:
+        send_mail(subject, message, settings.EMAIL_HOST_USER, recipient_list)
+    except Exception as e:
+        return Response({"error": "Failed to send email notification", "details": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+    return Response({"message": "Ordered successfully! A confirmation email has been sent to your email."}, status=status.HTTP_200_OK)
 
 

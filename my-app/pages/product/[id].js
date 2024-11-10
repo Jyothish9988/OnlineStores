@@ -118,6 +118,53 @@ const ProductDetails = () => {
     }
   };
 
+
+  const buyNow = async () => {
+  const username = localStorage.getItem('username'); // Corrected to match 'username'
+  const token = localStorage.getItem('access_token'); // Retrieve token from localStorage
+
+  console.log('Username:', username);
+  console.log('Token:', token);
+
+  if (!username || !token) {
+    alert('User is not logged in. Please log in to proceed.');
+    router.push('/login');
+    return;
+  }
+
+  try {
+    const response = await fetch('http://localhost:8000/accounts/order-now/', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        username: username, // Ensure consistency here
+        product_id: id,
+        quantity: quantity,
+      }),
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error('Error Response:', errorText);
+      alert(`Error: ${errorText}`);
+      throw new Error('Failed to order');
+    }
+
+    const data = await response.json();
+    if (data.error) {
+      throw new Error(data.error);
+    }
+
+    alert('Product ordered successfully!');
+  } catch (error) {
+    console.error('Order Error:', error);
+    alert(`Error ordering product: ${error.message}`);
+  }
+};
+
   return (
     <div style={{ minHeight: '100vh' }}>
       <Header />
@@ -174,8 +221,8 @@ const ProductDetails = () => {
                       </div>
 
                       <div className="button-container">
-                        <button className="buy-now-btn">
-                          <i className="fas fa-shopping-cart cart-icon"></i> Buy Now
+                        <button className="buy-now-btn" onClick={buyNow}>
+                          <i className="fas fa-shopping-cart cart-icon" ></i> Buy Now
                         </button>
                         <button className="add-to-cart-btn" onClick={addToCart}>
                           <i className="fas fa-cart-plus cart-icon"></i> Add to Cart
