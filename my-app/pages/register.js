@@ -47,7 +47,7 @@ const Register = () => {
               {/* Name Input */}
               <div className="mb-3 form-box">
                 <input
-                    type="email"
+                    type="text"
                     className="form-control"
                     id="name"
                     name="name"

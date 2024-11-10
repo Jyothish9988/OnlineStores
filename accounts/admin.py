@@ -33,7 +33,7 @@ class ProductAdmin(admin.ModelAdmin):
 
 @admin.register(Cart)
 class CartAdmin(admin.ModelAdmin):
-    list_display = ['user', 'product', 'quantity', 'added_at']
+    list_display = ['cartid','user', 'product', 'quantity', 'added_at']
     search_fields = ['user__username', 'product__name']
     list_filter = ['user', 'product']
     ordering = ['-added_at']

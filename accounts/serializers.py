@@ -78,7 +78,7 @@ class CartSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Cart
-        fields = ['user', 'product', 'quantity', 'added_at']
+        fields = ['cartid','user', 'product', 'quantity', 'added_at']
 
 
 class OrderSerializer(serializers.ModelSerializer):
@@ -94,4 +94,4 @@ class OrderSerializer(serializers.ModelSerializer):
 class AddressSerializer(serializers.ModelSerializer):
     class Meta:
         model = Address
-        fields = ['name', 'phone','line_1','line_2','city','state','postal_code','country']
+        fields = ['id', 'name', 'phone', 'line_1', 'line_2', 'city', 'state', 'postal_code', 'country']

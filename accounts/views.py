@@ -2,6 +2,7 @@
 from chowkidar.authentication import authenticate
 from chowkidar.decorators import login_required
 from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
 from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
@@ -147,11 +148,15 @@ def update_cart(request, cart_item_id):
 
 
 @api_view(['DELETE'])
-@permission_classes([IsAuthenticated])
-def remove_from_cart(request, cart_item_id):
-    cart_item = get_object_or_404(Cart, id=cart_item_id)
-    cart_item.delete()
-    return JsonResponse({'detail': 'Item removed successfully'})
+@permission_classes([IsAuthenticated])  # Ensure the user is authenticated
+def remove_from_cart(request, cartid):
+    try:
+
+        cart_item = Cart.objects.get(cartid=cartid, user=request.user)
+        cart_item.delete()  # Delete the cart item
+        return JsonResponse({'detail': 'Item removed successfully'})
+    except Cart.DoesNotExist:
+        return JsonResponse({'detail': 'Cart item not found'}, status=404)
 
 
 @api_view(['GET'])
@@ -171,39 +176,40 @@ def view_address(request):
     serializer = AddressSerializer(address)
     return Response(serializer.data)
 
+
+@api_view(['POST'])
+def add_address(request):
+    if not request.user.is_authenticated:
+        return Response({"detail": "Authentication credentials were not provided."},
+                        status=status.HTTP_401_UNAUTHORIZED)
+
+    serializer = AddressSerializer(data=request.data)
+    if serializer.is_valid():
+        # Set the user to the current authenticated user before saving
+        serializer.save(user=request.user)
+        return Response({"detail": "Address added successfully."}, status=status.HTTP_201_CREATED)
+
+    return Response({"error": "Invalid data", "details": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+
+
 @api_view(['PUT'])
-def update_address(request):
-    # Check if the user is authenticated
+def update_address(request, address_id):
     if not request.user.is_authenticated:
         return Response({"detail": "Authentication credentials were not provided."},
                         status=status.HTTP_401_UNAUTHORIZED)
 
     try:
-        # Get the user's address (assuming a one-to-one relationship with the user)
-        address = Address.objects.get(user=request.user)
+        address = Address.objects.get(id=address_id, user=request.user)
     except Address.DoesNotExist:
         return Response({"detail": "Address not found."}, status=status.HTTP_404_NOT_FOUND)
 
+    serializer = AddressSerializer(address, data=request.data, partial=True)
+    if serializer.is_valid():
+        serializer.save()
+        return Response({"detail": "Address updated successfully."}, status=status.HTTP_200_OK)
 
-    address_data = {
+    return Response({"error": "Invalid data", "details": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
 
-        'name': request.data.get('name'),
-        'phone': request.data.get('phone'),
-        'line_1': request.data.get('line_1'),
-        'line_2': request.data.get('line_2'),
-        'city': request.data.get('city'),
-        'state': request.data.get('state'),
-        'postal_code': request.data.get('postal_code'),
-        'country': request.data.get('country'),
 
-    }
 
-    # Update the address fields
-    for field, value in address_data.items():
-        if value:
-            setattr(address, field, value)
-
-    address.save()
-
-    return Response({"detail": "Address updated successfully."}, status=status.HTTP_200_OK)
 

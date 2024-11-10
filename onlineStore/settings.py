@@ -156,3 +156,5 @@ CORS_ALLOWED_ORIGINS = [
     # Next.js front-end
 ]
 CORS_ALLOW_CREDENTIALS = True
+CORS_ALLOW_METHODS = ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS']
+CORS_ALLOW_HEADERS = ['Authorization', 'Content-Type']
