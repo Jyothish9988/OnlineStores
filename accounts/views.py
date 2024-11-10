@@ -6,7 +6,7 @@ from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import permission_classes
 from django.contrib.auth.models import AnonymousUser
@@ -153,11 +153,9 @@ def update_cart(request, cart_item_id):
     return Response({"detail": "Cart item updated successfully."}, status=status.HTTP_200_OK)
 
 
-# Remove Product from Cart
-def remove_from_cart(request, item_id):
-    try:
-        item = Cart.objects.get(id=item_id, user=request.user)
-        item.delete()
-        return JsonResponse({"detail": "Item removed successfully."}, status=200)
-    except Cart.DoesNotExist:
-        return JsonResponse({"detail": "Item not found."}, status=404)
+@api_view(['DELETE'])
+@permission_classes([IsAuthenticated])
+def remove_from_cart(request, cart_item_id):
+    cart_item = get_object_or_404(Cart, id=cart_item_id)
+    cart_item.delete()
+    return JsonResponse({'detail': 'Item removed successfully'})
