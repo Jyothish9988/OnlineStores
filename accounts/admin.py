@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.utils.html import format_html
-from .models import CustomUser, Product, Cart
+from .models import CustomUser, Product, Cart, Order, Address
 
 
 @admin.register(CustomUser)
@@ -50,3 +50,26 @@ class CartAdmin(admin.ModelAdmin):
             self.message_user(request, "No items selected to clear.", messages.WARNING)
 
     clear_cart.short_description = 'Clear selected cart items'
+
+
+@admin.register(Order)
+class OrderAdmin(admin.ModelAdmin):
+    list_display = ['user', 'product', 'quantity', 'added_at', 'status']
+    search_fields = ['user__username', 'product__name']
+    list_filter = ['user', 'product']
+    ordering = ['-added_at']
+    date_hierarchy = 'added_at'
+    list_editable = ['status']
+
+
+
+
+@admin.register(Address)
+class AddressAdmin(admin.ModelAdmin):
+    list_display = ['user', 'city', 'state', 'postal_code']  # use postal_code instead of zip_code
+    search_fields = ['user__username', 'city', 'state', 'postal_code']  # make sure postal_code is included
+    list_filter = ['user', 'city', 'state', 'postal_code']  # use postal_code instead of zip_code
+    ordering = ['-city', '-state', '-postal_code']  # make sure postal_code is included
+
+    def city(self, obj):
+        return obj.city

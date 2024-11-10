@@ -1,6 +1,8 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.contrib.auth import get_user_model
+from django.db import models
+from django.conf import settings
 
 
 # Create your models here.
@@ -49,4 +51,27 @@ class Cart(models.Model):
         unique_together = ('user', 'product')
 
 
+class Order(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    quantity = models.PositiveIntegerField(default=1)
+    added_at = models.DateTimeField(auto_now_add=True)
+    status = models.BooleanField(default=False)
 
+    def __str__(self):
+        return f"{self.user.username} - {self.product.name} (x{self.quantity})"
+
+
+class Address(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='addresses')
+    name = models.CharField(max_length=255, default='Not Provided')
+    phone = models.CharField(max_length=255, default='Not Provided')
+    line_1 = models.CharField(max_length=255, default='Not Provided')
+    line_2 = models.CharField(max_length=255, blank=True, null=True, default='')
+    city = models.CharField(max_length=100, default='Unknown City')
+    state = models.CharField(max_length=100, default='Unknown State')
+    postal_code = models.CharField(max_length=20, default='000000')
+    country = models.CharField(max_length=100, default='Unknown Country')
+
+    def __str__(self):
+        return f'{self.user} - {self.city}, {self.state}'

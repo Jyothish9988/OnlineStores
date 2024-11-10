@@ -72,6 +72,12 @@ const Header = () => {
             ) : (
                 <>
                   <li className="nav-item">
+                    <Link className="nav-link" href="/profile" style={{color: 'black'}}>Profile</Link>
+                  </li>
+                  <li className="nav-item">
+                    <Link className="nav-link" href="/add-address" style={{color: 'black'}}>Address</Link>
+                  </li>
+                  <li className="nav-item">
                     <Link className="nav-link" href="/cart" style={{color: 'black'}}>Cart</Link>
                   </li>
                   <li className="nav-item">

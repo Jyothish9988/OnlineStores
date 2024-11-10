@@ -18,11 +18,16 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from django.views.generic import RedirectView
+from strawberry.django.views import GraphQLView
+from .schema import schema
+import sys
+import os
 
 
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('accounts/', include('accounts.urls')),
-
+    path("graphql/", GraphQLView.as_view(schema=schema), name="graphql"),
 
 ]

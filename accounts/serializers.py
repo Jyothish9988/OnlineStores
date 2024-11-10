@@ -4,7 +4,7 @@ from django.contrib.auth import get_user_model
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from django.contrib.auth.models import User
-from accounts.models import Profile, Product, Cart
+from accounts.models import Profile, Product, Cart, Order, Address
 
 User = get_user_model()
 
@@ -67,16 +67,31 @@ def update_profile(request):
         return Response({"error": "Profile not found."}, status=status.HTTP_404_NOT_FOUND)
 
 
-
 class ProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
         fields = ['id', 'name', 'description', 'price', 'stock', 'image_url']  # Include relevant fields
 
+
 class CartSerializer(serializers.ModelSerializer):
-    product = ProductSerializer()  # Nested serializer for product details
+    product = ProductSerializer()
 
     class Meta:
         model = Cart
-        fields = ['user', 'product', 'quantity', 'added_at']  # Now includes full product details
+        fields = ['user', 'product', 'quantity', 'added_at']
 
+
+class OrderSerializer(serializers.ModelSerializer):
+    user = serializers.StringRelatedField()
+    product = serializers.StringRelatedField()  #
+
+    class Meta:
+        model = Order
+        fields = ['id', 'user', 'product', 'quantity', 'added_at', 'status']
+        read_only_fields = ['id', 'added_at']
+
+
+class AddressSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Address
+        fields = ['name', 'phone','line_1','line_2','city','state','postal_code','country']

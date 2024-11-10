@@ -10,12 +10,12 @@ from django.shortcuts import render, get_object_or_404
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import permission_classes
 from django.contrib.auth.models import AnonymousUser
-from .models import Profile, Product, Cart
+from .models import Profile, Product, Cart, Address
 from .serializers import UserRegistrationSerializer, UserLoginSerializer, ProfileSerializer, ProductSerializer, \
-    CartSerializer
+    CartSerializer, AddressSerializer
 from rest_framework_simplejwt.tokens import RefreshToken
 import logging
-
+from rest_framework_simplejwt.tokens import RefreshToken
 
 # Create your views here.
 
@@ -28,7 +28,7 @@ class UserRegistrationView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-from rest_framework_simplejwt.tokens import RefreshToken
+
 
 
 class UserLoginView(APIView):
@@ -57,20 +57,13 @@ class UserLoginView(APIView):
 @api_view(['PUT'])
 @permission_classes([IsAuthenticated])
 def update_profile(request):
-    if isinstance(request.user, AnonymousUser):
-        return Response({"error": "Authentication credentials were not provided."}, status=status.HTTP_401_UNAUTHORIZED)
-
     try:
-        profile = Profile.objects.get(user=request.user)  # Get profile for the authenticated user
-
-        # Update the profile with new data
+        profile = Profile.objects.get(user=request.user)
         serializer = ProfileSerializer(profile, data=request.data, partial=True)
         if serializer.is_valid():
-            serializer.save()  # Save the profile
+            serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
-
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
     except Profile.DoesNotExist:
         return Response({"error": "Profile not found."}, status=status.HTTP_404_NOT_FOUND)
 
@@ -159,3 +152,58 @@ def remove_from_cart(request, cart_item_id):
     cart_item = get_object_or_404(Cart, id=cart_item_id)
     cart_item.delete()
     return JsonResponse({'detail': 'Item removed successfully'})
+
+
+@api_view(['GET'])
+def view_address(request):
+    # Check if the user is authenticated
+    if not request.user.is_authenticated:
+        return Response({"detail": "Authentication credentials were not provided."},
+                        status=status.HTTP_401_UNAUTHORIZED)
+
+    try:
+        # Get the user's address (assuming a one-to-one relationship with the user)
+        address = Address.objects.get(user=request.user)
+    except Address.DoesNotExist:
+        return Response({"detail": "Address not found."}, status=status.HTTP_404_NOT_FOUND)
+
+    # Serialize the address
+    serializer = AddressSerializer(address)
+    return Response(serializer.data)
+
+@api_view(['PUT'])
+def update_address(request):
+    # Check if the user is authenticated
+    if not request.user.is_authenticated:
+        return Response({"detail": "Authentication credentials were not provided."},
+                        status=status.HTTP_401_UNAUTHORIZED)
+
+    try:
+        # Get the user's address (assuming a one-to-one relationship with the user)
+        address = Address.objects.get(user=request.user)
+    except Address.DoesNotExist:
+        return Response({"detail": "Address not found."}, status=status.HTTP_404_NOT_FOUND)
+
+
+    address_data = {
+
+        'name': request.data.get('name'),
+        'phone': request.data.get('phone'),
+        'line_1': request.data.get('line_1'),
+        'line_2': request.data.get('line_2'),
+        'city': request.data.get('city'),
+        'state': request.data.get('state'),
+        'postal_code': request.data.get('postal_code'),
+        'country': request.data.get('country'),
+
+    }
+
+    # Update the address fields
+    for field, value in address_data.items():
+        if value:
+            setattr(address, field, value)
+
+    address.save()
+
+    return Response({"detail": "Address updated successfully."}, status=status.HTTP_200_OK)
+

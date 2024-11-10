@@ -5,9 +5,9 @@ from django.urls import path
 from django.views.decorators.csrf import csrf_exempt
 
 from . import views
-from .views import UserRegistrationView, UserLoginView, update_profile, ProductListView
+from .views import UserRegistrationView, UserLoginView, ProductListView, view_address, update_address
 from strawberry.django.views import GraphQLView
-from .schema import schema
+from onlineStore.schema import schema
 
 urlpatterns = [
     path('register/', UserRegistrationView.as_view(), name='register'),
@@ -21,5 +21,7 @@ urlpatterns = [
     path('add-to-cart/', views.add_to_cart, name='add_to_cart'),
     path('update-cart/<int:cart_item_id>/', views.update_cart, name='update_cart'),
     path('remove-from-cart/<int:cart_item_id>/', views.remove_from_cart, name='remove_from_cart'),
+    path('view-address/', view_address, name='view-address'),
+    path('update-address/', update_address, name='update-address'),
 ]
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
