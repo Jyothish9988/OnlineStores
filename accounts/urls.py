@@ -24,6 +24,8 @@ urlpatterns = [
     path('add-address/', views.add_address, name='add_address'),
     path('update-address/<int:address_id>/', views.update_address, name='update_address'),
     path('order-now/', views.order_now, name='order_now'),
+    path('orders/', views.get_user_orders, name='get_user_orders'),
+
 
 ]
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

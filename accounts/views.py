@@ -235,3 +235,34 @@ def order_now(request):
     return Response({"message": "Ordered successfully! A confirmation email has been sent to your email."}, status=status.HTTP_200_OK)
 
 
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_user_orders(request):
+    user = request.user
+    orders = Order.objects.filter(user=user).order_by('-added_at')
+
+    if not orders:
+        return Response({'message': 'No orders found for this user.'}, status=status.HTTP_404_NOT_FOUND)
+
+    order_data = []
+    for order in orders:
+        product = order.product
+        try:
+            address = Address.objects.get(user=user)
+            user_address = f"{address.line_1}, {address.line_2}, {address.city}, {address.state}, {address.postal_code}, {address.country}"
+        except Address.DoesNotExist:
+            user_address = "No Address Available"
+
+        order_data.append({
+            'orderid': order.orderid,
+            'product_name': product.name,
+            'product_description': product.description,
+            'quantity': order.quantity,
+            'price': product.price,
+            'added_at': order.added_at,
+            'status': "Completed" if order.status else "Pending",
+            'user_address': user_address,
+            'image_url': product.image_url,
+        })
+
+    return Response(order_data, status=status.HTTP_200_OK)

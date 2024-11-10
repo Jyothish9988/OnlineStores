@@ -19,16 +19,38 @@ const AddAddressPage = () => {
   const [message, setMessage] = useState('');
   const router = useRouter();
 
+  // Function to check if the token is expired
+  const isTokenExpired = (token) => {
+    const expiry = JSON.parse(atob(token.split('.')[1])).exp;
+    return (expiry * 1000) < Date.now(); // Check if the token has expired
+  };
+
+  // Function to handle token validation
+  const validateToken = () => {
+    const token = localStorage.getItem('access_token');
+    if (!token) {
+      setError('Token missing. Please log in.');
+      router.push('/login');
+      return false;
+    }
+
+    // Check if the token is expired
+    if (isTokenExpired(token)) {
+      setError('Token expired. Please log in again.');
+      localStorage.removeItem('access_token'); // Clear expired token
+      router.push('/login'); // Redirect to login
+      return false;
+    }
+
+    return true;
+  };
+
   // Fetch the existing address if available
   useEffect(() => {
     const fetchAddress = async () => {
-      const token = localStorage.getItem('access_token');
-      if (!token) {
-        setError('Token missing. Please log in.');
-        router.push('/login');
-        return;
-      }
+      if (!validateToken()) return; // Exit if token is invalid or expired
 
+      const token = localStorage.getItem('access_token');
       try {
         const response = await fetch('http://localhost:8000/accounts/view-address/', {
           method: 'GET',
@@ -81,13 +103,9 @@ const AddAddressPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const token = localStorage.getItem('access_token');
-    if (!token) {
-      setError('Token missing. Please log in.');
-      router.push('/login');
-      return;
-    }
+    if (!validateToken()) return; // Exit if token is invalid or expired
 
+    const token = localStorage.getItem('access_token');
     const url = address.id
       ? `http://localhost:8000/accounts/update-address/${address.id}/`
       : 'http://localhost:8000/accounts/add-address/';
@@ -150,7 +168,7 @@ const AddAddressPage = () => {
               <input
                 type="text"
                 name="phoneNo"
-                value={address.phoneNo}
+                value={address.phone}
                 onChange={handleChange}
                 required
               />
@@ -199,7 +217,7 @@ const AddAddressPage = () => {
               <input
                 type="text"
                 name="postalCode"
-                value={address.postalCode}
+                value={address.postal_code}
                 onChange={handleChange}
                 required
               />

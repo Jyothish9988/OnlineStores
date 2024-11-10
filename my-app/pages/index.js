@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from 'react';
-import { useRouter } from 'next/router';  // Import useRouter from next/router
-import Header from './components/header'; // Adjusted path
-import './styles/product_style.css'; // Adjusted path for styling
+import { useRouter } from 'next/router';  
+import Header from './components/header';
+import './styles/product_style.css';
 
 const Home = () => {
   const [products, setProducts] = useState([]);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const router = useRouter();  // Initialize router
+  const router = useRouter();
 
-  // Fetch the products and login status
+  // Fetch the products
   useEffect(() => {
     const fetchProducts = async () => {
       try {
@@ -22,8 +22,9 @@ const Home = () => {
 
     fetchProducts();
 
+    // Check login status
     const checkLoginStatus = () => {
-      setIsLoggedIn(!!localStorage.getItem('access_token'));  // assuming you store access_token
+      setIsLoggedIn(!!localStorage.getItem('access_token'));
     };
 
     checkLoginStatus();
@@ -35,13 +36,13 @@ const Home = () => {
     };
   }, []);
 
-  // Handle "Product Details" button click
-  const handleProductDetailsClick = (productId) => {
+
+  const handleProductAction = (productId) => {
     if (!isLoggedIn) {
       alert('Not logged in. Please log in to continue.');
-      router.push('/login');  // Use router.push for Next.js navigation to the login page
+      router.push('/login');
     } else {
-      router.push(`/product/${productId}`);  // Use Next.js dynamic routing to navigate to the product details page
+      router.push(`/product/${productId}`);
     }
   };
 
@@ -52,7 +53,7 @@ const Home = () => {
         <h1>Products</h1>
 
         <div className="products-container">
-          {/* If products are available, display them */}
+          {}
           {products.length > 0 ? (
             products.map((product) => (
               <div key={product.id} className="product-card">
@@ -66,16 +67,16 @@ const Home = () => {
                     <span className="product-card__price">${product.price}</span>
                     <button
                       className="product-card__btn"
-                      onClick={() => handleProductDetailsClick(product.id)} // Change button action to Product Details
+                      onClick={() => handleProductAction(product.id)}
                     >
-                      Product Details
+                      {isLoggedIn ? 'Product Details' : 'Login to View'}
                     </button>
                   </div>
                 </div>
               </div>
             ))
           ) : (
-            <p>Loading products...</p> // Show loading text if products are still being fetched
+            <p>Loading products...</p>
           )}
         </div>
       </div>

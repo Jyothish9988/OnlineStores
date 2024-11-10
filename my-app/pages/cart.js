@@ -30,6 +30,14 @@ const CartPage = () => {
 
         if (!response.ok) {
           const errorData = await response.json();
+
+          // Check if the token has expired (status 401 or other criteria)
+          if (response.status === 401) {
+            setError('Session expired. Please log in again.');
+            localStorage.removeItem('access_token');  // Clear expired token
+            router.push('/login');  // Redirect to login page
+            return;
+          }
           setError(`Failed to fetch cart items: ${errorData.detail || response.statusText}`);
         } else {
           const data = await response.json();
@@ -49,40 +57,39 @@ const CartPage = () => {
 
   // Function to handle item removal by cartid
   const handleDelete = async (cartid) => {
-  if (!cartid) {
-    setError('Invalid cart ID.');
-    return;
-  }
-
-  const token = localStorage.getItem('access_token');
-  if (!token) {
-    setError('Token missing. Please log in.');
-    router.push('/login');
-    return;
-  }
-
-  try {
-    const response = await fetch(`http://localhost:8000/accounts/remove-from-cart/${cartid}/`, {
-      method: 'DELETE',
-      headers: {
-        'Authorization': `Bearer ${token}`,
-      },
-    });
-
-    if (response.ok) {
-      // Remove the item from the local state after deletion
-      setCartItems(cartItems.filter(item => item.cartid !== cartid));
-      setSuccessMessage('Item removed successfully!');
-    } else {
-      const errorData = await response.json();
-      setError(`Failed to remove item: ${errorData.detail || response.statusText}`);
+    if (!cartid) {
+      setError('Invalid cart ID.');
+      return;
     }
-  } catch (error) {
-    console.error('Error removing item:', error);
-    setError('An error occurred while removing the item');
-  }
-};
 
+    const token = localStorage.getItem('access_token');
+    if (!token) {
+      setError('Token missing. Please log in.');
+      router.push('/login');
+      return;
+    }
+
+    try {
+      const response = await fetch(`http://localhost:8000/accounts/remove-from-cart/${cartid}/`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
+      });
+
+      if (response.ok) {
+        // Remove the item from the local state after deletion
+        setCartItems(cartItems.filter(item => item.cartid !== cartid));
+        setSuccessMessage('Item removed successfully!');
+      } else {
+        const errorData = await response.json();
+        setError(`Failed to remove item: ${errorData.detail || response.statusText}`);
+      }
+    } catch (error) {
+      console.error('Error removing item:', error);
+      setError('An error occurred while removing the item');
+    }
+  };
 
   if (loading) {
     return <div>Loading...</div>;

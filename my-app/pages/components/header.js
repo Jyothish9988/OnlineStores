@@ -81,6 +81,9 @@ const Header = () => {
                     <Link className="nav-link" href="/cart" style={{color: 'black'}}>Cart</Link>
                   </li>
                   <li className="nav-item">
+                    <Link className="nav-link" href="/orders" style={{color: 'black'}}>Orders</Link>
+                  </li>
+                  <li className="nav-item">
                     <button className="nav-link btn btn-link" onClick={handleLogout} style={{color: 'black'}}>Logout
                     </button>
                   </li>
