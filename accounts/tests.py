@@ -189,20 +189,13 @@ class AddToCartTestCase(APITestCase):
     def test_add_to_cart_successful(self):
         url = reverse("add_to_cart")
         data = {"product_id": self.product.id, "quantity": 1}
-
         response = self.client.post(url, data, format="json")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-
-
-
-        # Verify cart item is created with correct quantity
-        cart_item = Cart.objects.get(user=self.user, product=self.product)
 
 
     def test_add_to_cart_without_quantity(self):
         url = reverse("add_to_cart")
         data = {"product_id": self.product.id}
-
         response = self.client.post(url, data, format="json")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
@@ -211,7 +204,6 @@ class AddToCartTestCase(APITestCase):
     def test_add_to_cart_without_product_id(self):
         url = reverse("add_to_cart")
         data = {"quantity": 2}
-
         response = self.client.post(url, data, format="json")
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(response.data["error"], "Product ID is required")
@@ -219,20 +211,100 @@ class AddToCartTestCase(APITestCase):
     def test_add_to_cart_with_invalid_product_id(self):
         url = reverse("add_to_cart")
         data = {"product_id": 999, "quantity": 1}  # Assuming 999 does not exist
-
         response = self.client.post(url, data, format="json")
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
         self.assertEqual(response.data["error"], "Product not found")
 
     def test_increase_quantity_if_product_already_in_cart(self):
         Cart.objects.create(user=self.user, product=self.product, quantity=1)
-
         url = reverse("add_to_cart")
         data = {"product_id": self.product.id, "quantity": 2}
-
         response = self.client.post(url, data, format="json")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-
         cart_item = Cart.objects.get(user=self.user, product=self.product)
         self.assertEqual(cart_item.quantity, 3)
 
+
+from django.urls import reverse
+from rest_framework import status
+from rest_framework.test import APITestCase
+from django.contrib.auth import get_user_model
+from django.core import mail
+from unittest.mock import patch
+from .models import Product, Order
+
+User = get_user_model()
+
+
+class OrderNowTest(APITestCase):
+    def setUp(self):
+        # Create a user
+        self.user = User.objects.create_user(username='testuser', email='testuser@example.com', password='testpassword')
+        self.client.force_authenticate(user=self.user)
+
+        # Create a product
+        self.product = Product.objects.create(name='Test Product', price=100.00)
+
+    def test_order_now_success(self):
+        url = reverse('order_now')
+        data = {
+            "product_id": self.product.id,
+            "quantity": 2
+        }
+
+        # Ensure any existing order for this user and product is cleared
+        Order.objects.filter(user=self.user, product=self.product).delete()
+
+        # Make the POST request
+        response = self.client.post(url, data, format='json')
+
+        # Check response
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data["message"],
+                         "Ordered successfully! A confirmation email has been sent to your email.")
+
+        # Ensure the order has been created with the correct quantity
+        order_item = Order.objects.get(user=self.user, product=self.product)
+        self.assertEqual(order_item.quantity, 2)
+
+        # Check that an email was sent
+        self.assertEqual(len(mail.outbox), 1)
+        self.assertIn("Order Confirmation", mail.outbox[0].subject)
+        self.assertIn("Your order for Test Product (Quantity: 2) has been successfully placed.", mail.outbox[0].body)
+
+    def test_order_now_missing_product_id(self):
+        url = reverse('order_now')
+        data = {
+            "quantity": 1
+        }
+
+        response = self.client.post(url, data, format='json')
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(response.data["error"], "Product ID is required")
+
+    def test_order_now_product_not_found(self):
+        url = reverse('order_now')
+        data = {
+            "product_id": 999,  # Invalid product ID
+            "quantity": 1
+        }
+
+        response = self.client.post(url, data, format='json')
+
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        self.assertEqual(response.data["error"], "Product not found")
+
+    @patch('accounts.views.send_mail', side_effect=Exception("Email sending failed"))
+    def test_order_now_email_fail(self, mock_send_mail):
+        url = reverse('order_now')
+        data = {
+            "product_id": self.product.id,
+            "quantity": 1
+        }
+
+        response = self.client.post(url, data, format='json')
+
+        self.assertEqual(response.status_code, status.HTTP_500_INTERNAL_SERVER_ERROR)
+        self.assertEqual(response.data["error"], "Failed to send email notification")
+        self.assertIn("details", response.data)

@@ -1,1 +1,12 @@
-{}
+{
+  "/_app": "pages/_app.js",
+  "/_error": "pages/_error.js",
+  "/_document": "pages/_document.js",
+  "/": "pages/index.js",
+  "/login": "pages/login.js",
+  "/orders": "pages/orders.js",
+  "/add-address": "pages/add-address.js",
+  "/cart": "pages/cart.js",
+  "/product/[id]": "pages/product/[id].js",
+  "/profile": "pages/profile.js"
+}

@@ -218,8 +218,13 @@ def order_now(request):
     except Product.DoesNotExist:
         return Response({"error": "Product not found"}, status=status.HTTP_404_NOT_FOUND)
 
-    order_item, created = Order.objects.get_or_create(user=user, product=product)
-    order_item.quantity += quantity
+    # Manually check if the order exists, and update or create accordingly
+    order_item = Order.objects.filter(user=user, product=product).first()
+    if order_item:
+        order_item.quantity += quantity  # Increment quantity if order exists
+    else:
+        order_item = Order.objects.create(user=user, product=product, quantity=quantity)  # Create new order
+
     order_item.save()
 
     # Sending email after successful order
@@ -233,7 +238,6 @@ def order_now(request):
         return Response({"error": "Failed to send email notification", "details": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     return Response({"message": "Ordered successfully! A confirmation email has been sent to your email."}, status=status.HTTP_200_OK)
-
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
