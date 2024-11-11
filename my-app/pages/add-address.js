@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
-import Header from './components/header'; // Assuming Header is a separate component
-import './styles/address.css'; // Make sure you have proper styling for the form
+import Header from './components/header';
+import './styles/address.css';
 
 const AddAddressPage = () => {
   const [address, setAddress] = useState({
@@ -19,13 +19,12 @@ const AddAddressPage = () => {
   const [message, setMessage] = useState('');
   const router = useRouter();
 
-  // Function to check if the token is expired
   const isTokenExpired = (token) => {
     const expiry = JSON.parse(atob(token.split('.')[1])).exp;
-    return (expiry * 1000) < Date.now(); // Check if the token has expired
+    return (expiry * 1000) < Date.now();
   };
 
-  // Function to handle token validation
+
   const validateToken = () => {
     const token = localStorage.getItem('access_token');
     if (!token) {
@@ -37,18 +36,18 @@ const AddAddressPage = () => {
     // Check if the token is expired
     if (isTokenExpired(token)) {
       setError('Token expired. Please log in again.');
-      localStorage.removeItem('access_token'); // Clear expired token
-      router.push('/login'); // Redirect to login
+      localStorage.removeItem('access_token');
+      router.push('/login');
       return false;
     }
 
     return true;
   };
 
-  // Fetch the existing address if available
+
   useEffect(() => {
     const fetchAddress = async () => {
-      if (!validateToken()) return; // Exit if token is invalid or expired
+      if (!validateToken()) return;
 
       const token = localStorage.getItem('access_token');
       try {
@@ -62,7 +61,7 @@ const AddAddressPage = () => {
         if (!response.ok) {
           const errorText = await response.text();
           if (response.status === 404) {
-            // If no address is found (404), allow the user to add a new address
+
             setAddress({
               line_1: '',
               line_2: '',
@@ -78,7 +77,7 @@ const AddAddressPage = () => {
           }
         } else {
           const data = await response.json();
-          setAddress(data); // Prepopulate address if found
+          setAddress(data);
         }
       } catch (error) {
         setError(`An error occurred while fetching address: ${error.message}`);
@@ -99,7 +98,7 @@ const AddAddressPage = () => {
     }));
   };
 
-  // Handle form submission to add or update address
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
